@@ -1,0 +1,18 @@
+# Adopt only after M0/M2 prove the app, auth origins and OpenNext adapter.
+# Backend deployment is a separate reviewed operator step.
+[build]
+  base = "."
+  command = "pnpm --filter @sema/web build"
+  publish = "apps/web/.next"
+
+[build.environment]
+  PNPM_VERSION = "12.10.1"
+  PNPM_FLAGS = "--frozen-lockfile"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Set the site's package directory to apps/web in Netlify settings; keep the
+# base at the repository root for pnpm-workspace.yaml and pnpm-lock.yaml.
+# Keep PNPM_VERSION aligned with the reviewed root packageManager pin.
+# Set actual backend/site/auth origins and secrets in the correct provider scope.
+# Disable competing automatic production deploys/previews in Netlify settings.
+# Never configure SEMA_TEST_MODE=synthetic for production.

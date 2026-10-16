@@ -1,0 +1,88 @@
+{
+  "artifact": "Sema tech-stack candidate",
+  "version": "1.0",
+  "date": "2026-10-16",
+  "timezone": "Africa/Nairobi",
+  "status": "Proposed exact package snapshot; not installed as an application or integration-tested",
+  "researchProvider": "Firecrawl plugin",
+  "runtime": {
+    "node": "24.x, exact supported security patch to pin at setup",
+    "packageManager": "pnpm 12.10.1; pin packageManager to pnpm@12.10.1 and commit pnpm-lock.yaml",
+    "workspaceLayout": "apps/web (@sema/web), packages/ui (@sema/ui); root pnpm-workspace.yaml; docs reference package excluded",
+    "typescript": "7.0.2"
+  },
+  "packages": {
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "convex": "1.47.0",
+    "@convex-dev/better-auth": "0.12.5",
+    "better-auth": "1.6.33",
+    "@convex-dev/workflow": "0.4.10",
+    "next-intl": "4.14.9",
+    "tailwindcss": "4.3.3",
+    "react-hook-form": "7.90.0",
+    "zod": "4.6.7",
+    "convex-test": "0.0.62",
+    "pdfjs-dist": "6.4.299",
+    "mammoth": "1.13.0",
+    "cheerio": "1.2.0",
+    "@playwright/test": "1.64.1",
+    "@hookform/resolvers": "5.9.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "lucide-react": "1.58.0"
+  },
+  "additionalPins": {
+    "typescript": "7.0.2",
+    "vitest": "4.1.12"
+  },
+  "requiredCompanionRanges": {
+    "convex": "^1.46.0",
+    "convex-helpers": "^0.1.127",
+    "@convex-dev/workpool": "^0.4.4"
+  },
+  "servicePlans": {
+    "frontend": "Netlify Free",
+    "backend": "Convex Free",
+    "inference": "Cloudflare Workers AI Free",
+    "email": "Resend Free",
+    "collections": "IntaSend account; verified fees and terms required"
+  },
+  "selectionWarnings": [
+    "@convex-dev/better-auth 0.12.5 requires better-auth >=1.6.11 <1.7.0; 1.6.33 is selected from release-1.6, not latest 1.7.10.",
+    "Use Vitest 4.1.12, not latest 5.0.5: selected Better Auth 1.6.33 declares Vitest peers through major 4.",
+    "Resolve and exact-lock convex-helpers and workpool satisfying the workflow peer ranges.",
+    "TypeScript 7.0.2 passed the existing schema-only checks; Next.js/auth/Netlify application compatibility is pending.",
+    "Security advisories, transitive lock resolution, browser bundle size, runtime parser isolation, provider privacy and recovery remain foundation gates."
+  ],
+  "extraEngineeringDefaults": {
+    "components": "shadcn/ui generated source; CLI/component registry revisions pinned at setup",
+    "forms": "React Hook Form with Zod through @hookform/resolvers",
+    "localization": "next-intl, English and Swahili message catalogs",
+    "externalApis": "server-side native fetch with validated responses",
+    "frontendState": "Convex hooks plus local React/form state",
+    "lint": "supported ESLint and matching eslint-config-next; exact patch resolved at setup",
+    "monitoring": "native provider diagnostics with redacted application events; independent uptime/recovery proof required",
+    "malwareScanning": "mandatory unresolved runtime feasibility gate; MIME checks do not replace scanning"
+  },
+  "scope": "Stack specification only; no deployment, account changes, paid upgrades or runtime Firecrawl integration",
+  "declaredCompatibilityCheck": {
+    "date": "2026-10-16",
+    "selectedPeerComparisons": 20,
+    "allSelectedPeersSatisfyDeclaredRanges": true,
+    "nodeEngineProbe": "24.19.0 satisfies retrieved package Node engine ranges",
+    "unresolvedRequiredCompanions": [
+      {
+        "package": "@convex-dev/workflow",
+        "peer": "convex-helpers",
+        "range": "^0.1.127"
+      },
+      {
+        "package": "@convex-dev/workflow",
+        "peer": "@convex-dev/workpool",
+        "range": "^0.4.4"
+      }
+    ],
+    "scope": "Semver metadata analysis only; no full dependency installation, transitive lock resolution, application build or runtime tests"
+  }
+}

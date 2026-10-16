@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+      SEMA_TEST_MODE: synthetic
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, verified 2026-10-16
+        with:
+          persist-credentials: false
+      - name: Set Node from reviewed runtime pin
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6, verified 2026-10-16
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - name: Verify application contract
+        run: node scripts/ci/verify-project.mjs
+      - name: Enable pinned pnpm through Corepack
+        run: |
+          corepack enable
+          pnpm --version
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting
+        run: pnpm run format:check
+      - name: Lint
+        run: pnpm run lint
+      - name: Type-check
+        run: pnpm run typecheck
+      - name: Security checks
+        run: pnpm run ci:security
+      - name: Unit and domain tests
+        run: pnpm run test:unit
+      - name: Convex handler tests
+        run: pnpm run test:convex
+      - name: Deterministic RAG regression
+        run: pnpm run test:rag:fixtures
+      - name: Production build with synthetic configuration
+        run: pnpm run build
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Synthetic browser journey
+        run: pnpm run test:e2e

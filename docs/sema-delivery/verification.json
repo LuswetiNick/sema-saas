@@ -1,0 +1,46 @@
+{
+  "status": "passed",
+  "scope": "Local pnpm document/template structure and synthetic preflight fixtures only",
+  "markdownFilesChecked": 8,
+  "localLinks": "Available references checked; two pre-existing missing archive assets remain unchanged",
+  "knownMissingDocumentationAssets": [
+    "archive/README.md",
+    "sema-engineering-blueprint-v1.zip"
+  ],
+  "fences": "balanced",
+  "implementationTasks": 44,
+  "milestones": 9,
+  "workflow": "Parsed; action pins, read-only permissions, disabled persisted credentials, Corepack, frozen pnpm install and required root commands checked; no deployment job",
+  "toml": "Parsed; pnpm web build, repository-root base, apps/web/.next publish directory and matching pnpm pin checked",
+  "releaseManifest": "Parsed; pnpm version field present and defaults remain unapproved",
+  "packageManager": "pnpm@12.10.1 aligned across application manifest, schema reference manifest, candidate snapshot and Netlify template",
+  "notVerified": [
+    "GitHub execution or enforcement",
+    "actual application tests",
+    "Full YAML/dependency resolution by a frozen pnpm install",
+    "Standalone schema checks rerun under pnpm",
+    "Mermaid rendering",
+    "Netlify/Convex deployment",
+    "provider integration",
+    "bilingual model quality",
+    "recovery"
+  ],
+  "preflightSyntax": "node --check passed",
+  "preflightFixtures": {
+    "passed": 18,
+    "positiveCases": 4,
+    "negativeCases": 14,
+    "scope": "Synthetic file fixtures covering workspace/package-manager pins, lockfile headers/importers, required scripts, exact backend dependencies and runtime pins; not a real dependency install"
+  },
+  "preflightNegativeCheck": "Current application scaffold correctly rejected for missing release scripts, backend dependencies and exact runtime pin",
+  "checkedOn": "2026-10-16",
+  "formatChecks": "Balanced Markdown fences and script/YAML/TOML/JSON syntax checked; formatter not rerun",
+  "files": {
+    "sema-delivery/.github/workflows/ci.yml": "a3ad8ea43d407194879c5b044bf1a9a5b4c27b351fffcb0d04f413fb3600850a",
+    "sema-delivery/.node-version": "7e8a2fa94951112b894a3dbe3d05efef5e9263741fa49125f0a70f40fedab4cc",
+    "sema-delivery/README.md": "1552afcd0e2210c4b837a916b5a631f793ff5a8dbbc57824294021c4784695ec",
+    "sema-delivery/netlify.toml.example": "9292a3dac1cf854e102355cde095e9e63f627a6f4ffb0b840b37e2b6f7af5874",
+    "sema-delivery/release-manifest.template.json": "391925fd9e9e144d6bd773d8e2b328f00d6537d9a5d626cf2bd1f3224c2f0f56",
+    "sema-delivery/scripts/ci/verify-project.mjs": "9acdbecef3c42a29d3138c7a58bbfdd396dc99c5b70f4db8e840f014c10da366"
+  }
+}

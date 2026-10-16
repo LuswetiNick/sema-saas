@@ -1,0 +1,17 @@
+{
+  "name": "sema-saas",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@12.10.1",
+  "engines": {
+    "node": ">=24.0.0 <25",
+    "pnpm": ">=12.0.0 <13"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @sema/web dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter @sema/web start",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

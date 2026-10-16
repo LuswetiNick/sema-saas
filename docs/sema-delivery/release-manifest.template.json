@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "status": "UNSET_REQUIRES_REVIEW",
+  "candidate": {
+    "commitSha": null,
+    "lockfileSha256": null,
+    "cleanTree": false,
+    "ciRunUrl": null,
+    "ciCommitSha": null,
+    "ciPassed": false
+  },
+  "stage": {
+    "current": null,
+    "requested": null,
+    "pilotOfferVersion": null,
+    "initialPilotEnrollmentOpen": null,
+    "reviewedCapabilities": []
+  },
+  "targets": {
+    "convexDeployment": null,
+    "netlifySiteId": null,
+    "providerEnvironment": "UNSET",
+    "verified": false
+  },
+  "versions": {
+    "node": null,
+    "pnpm": null,
+    "typescript": null,
+    "convex": null,
+    "authAdapter": null,
+    "betterAuth": null,
+    "workflow": null,
+    "netlifyCli": null,
+    "openNextAdapter": null,
+    "model": null,
+    "prompt": null,
+    "embedding": null,
+    "evaluationDataset": null
+  },
+  "evidence": {
+    "authorizationSecurityPrivacy": null,
+    "bilingualEvaluation": null,
+    "billingRefundReconciliation": null,
+    "deletionExportRecovery": null,
+    "vendorTermsAndEconomics": null,
+    "nonfunctionalRequirements": null,
+    "stagePrerequisites": null,
+    "distinctEligibleSettledStarterConversions": null,
+    "auditedSubstantivePilotAnswerCount": null
+  },
+  "migration": {
+    "approvedIds": [],
+    "readinessChecks": [],
+    "backwardCompatible": false,
+    "recoveryPointAndJournalVerified": false,
+    "compatibleRollbackReference": null
+  },
+  "approval": {
+    "actor": null,
+    "approvedAtUtc": null,
+    "approved": false,
+    "unresolvedRisks": [],
+    "blockingFindingsClosed": false
+  },
+  "actualRelease": {
+    "convexReleaseId": null,
+    "netlifyDeployId": null,
+    "buildChecksum": null,
+    "smokeEvidence": null,
+    "observationEvidence": null,
+    "activatedCapabilities": [],
+    "completedAtUtc": null
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "sema-technical-design",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@12.10.1",
+  "description": "Sema physical schema and contract design; no deployed application handlers",
+  "scripts": {
+    "check": "node scripts/verify-schema.cjs"
+  },
+  "dependencies": {
+    "convex": "1.47.0"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  }
+}

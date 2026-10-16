@@ -1,0 +1,34 @@
+{
+  "artifactVersion": "1.0",
+  "checkedAt": "2026-10-16T13:52:43.719Z",
+  "toolchain": {
+    "node": "v24.19.0",
+    "convex": "1.47.0",
+    "typescript": "7.0.2"
+  },
+  "passed": {
+    "bundlerTypeCheck": true,
+    "nodeInspectionTypeCheck": true,
+    "realSdkSchemaInstantiation": true,
+    "schemaValidationEnabled": true,
+    "strictTableNamesAndPrivateDtoNegativeTypeChecks": true,
+    "physicalTables": 40,
+    "logicalRecordsMapped": 54,
+    "ordinaryIndexesChecked": 110,
+    "idReferencesChecked": 173,
+    "vectorIndexes": 1,
+    "vectorDimensions": 1024,
+    "searchIndexes": 1,
+    "publicOperationContracts": 22,
+    "explicitVisitorDtoPrivateFieldExclusion": true,
+    "commercialConstantChecks": true
+  },
+  "notTested": [
+    "Deployed schema acceptance or generated application handlers",
+    "Actual authorization, session revocation, tenant isolation or concurrent mutations",
+    "Runtime semantic bounds, malicious-file isolation or SSRF enforcement",
+    "Model/provider calls, bilingual RAG quality or performance",
+    "M-Pesa charges, refunds, taxes, fees or provider reconciliation",
+    "Real deletion, component/file recovery, free-tier capacity or legal/vendor eligibility"
+  ]
+}

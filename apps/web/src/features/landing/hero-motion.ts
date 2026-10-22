@@ -1,5 +1,5 @@
 import { initialRuns, sampleDurations, sampleRoutes, sampleSubjects } from "./content";
-import { clamp, elapsedLabel, lerp, requiredElement } from "./motion-math";
+import { clamp, elapsedLabel, frameEase, lerp, requiredElement } from "./motion-math";
 
 export class HeroMotion {
   private readonly hero: HTMLElement;
@@ -15,7 +15,9 @@ export class HeroMotion {
   private bounds = { left: 0, top: 0, width: 1, height: 1 };
   private target = { x: 0, y: 0 };
   private cursor = { x: 0, y: 0 };
-  private idle = 90;
+  private idle = 1500;
+  private viewportHeight = 1;
+  private backgroundScroll = Number.NaN;
   private activeTime = 0;
   private completed = 0;
   private activeNode = -1;
@@ -37,6 +39,7 @@ export class HeroMotion {
   get visible() { return this.hero.dataset.visible === "true"; }
 
   measure() {
+    this.viewportHeight = Math.max(1, window.innerHeight);
     const rect = this.stage.getBoundingClientRect();
     this.bounds = { left: rect.left, top: rect.top + window.scrollY, width: rect.width, height: rect.height };
   }
@@ -47,34 +50,38 @@ export class HeroMotion {
     this.idle = 0;
   }
 
-  leave() { this.idle = 90; }
+  leave() { this.idle = 1500; }
 
   render(scroll: number, delta: number, coarse: boolean) {
-    const height = Math.max(1, window.innerHeight);
+    const height = this.viewportHeight;
     const heroScroll = clamp(scroll / height);
-    this.artwork.style.transform = `translate3d(${Math.sin(scroll / 700) * 7 + Math.sin(scroll / 1900) * 3}vw,${Math.sin(scroll / 1300) * -2}vh,0) scale(${1.02 + Math.abs(Math.sin(scroll / 1600)) * .04}) rotate(${Math.sin(scroll / 1100) * -1.2}deg)`;
-    this.artwork.style.opacity = String(.6 * (1 - heroScroll * .6));
-    this.veil.style.opacity = String(clamp((scroll - height * .12) / (height * .45)) * .97);
+    if (scroll !== this.backgroundScroll) {
+      this.artwork.style.transform = `translate3d(${Math.sin(scroll / 700) * 7 + Math.sin(scroll / 1900) * 3}vw,${Math.sin(scroll / 1300) * -2}vh,0) scale(${1.02 + Math.abs(Math.sin(scroll / 1600)) * .04}) rotate(${Math.sin(scroll / 1100) * -1.2}deg)`;
+      this.artwork.style.opacity = String(.6 * (1 - heroScroll * .6));
+      this.veil.style.opacity = String(clamp((scroll - height * .12) / (height * .45)) * .97);
+      this.backgroundScroll = scroll;
+    }
     if (!this.visible) return;
     this.activeTime += delta;
-    this.idle += 1;
-    const x = this.idle >= 90 || coarse ? Math.sin(this.activeTime / 2800) * .3 : this.target.x;
-    const y = this.idle >= 90 || coarse ? Math.cos(this.activeTime / 3300) * .2 : this.target.y;
-    this.cursor.x = lerp(this.cursor.x, x, .07);
-    this.cursor.y = lerp(this.cursor.y, y, .07);
+    this.idle += delta;
+    const x = this.idle >= 1500 || coarse ? Math.sin(this.activeTime / 2800) * .3 : this.target.x;
+    const y = this.idle >= 1500 || coarse ? Math.cos(this.activeTime / 3300) * .2 : this.target.y;
+    const ease = frameEase(.07, delta);
+    this.cursor.x = lerp(this.cursor.x, x, ease);
+    this.cursor.y = lerp(this.cursor.y, y, ease);
     this.rig.style.transform = `rotateY(${-16 * (1 - heroScroll * .5) + this.cursor.x * 13}deg) rotateX(${7 - this.cursor.y * 9}deg) translateY(${heroScroll * -40}px)`;
     this.layers.forEach((layer, i) => {
-      layer.x = lerp(layer.x, this.cursor.x, .06 + i * .025);
-      layer.y = lerp(layer.y, this.cursor.y, .06 + i * .025);
+      const ease = frameEase(.06 + i * .025, delta);
+      layer.x = lerp(layer.x, this.cursor.x, ease);
+      layer.y = lerp(layer.y, this.cursor.y, ease);
       const k = layer.depth / 100;
       layer.element.style.transform = `translate3d(${layer.x * k * 40}px,${layer.y * k * 30}px,${layer.depth}px)`;
     });
     this.nodes.forEach((node, i) => {
-      node.style.setProperty("--px", `${this.cursor.x * (16 + i * 4)}px`);
-      node.style.setProperty("--py", `${this.cursor.y * (12 + i * 3)}px`);
+      node.style.transform = `translate3d(${-14 + this.cursor.x * (16 + i * 4)}px,calc(-50% - 30px + ${this.cursor.y * (12 + i * 3)}px),0)`;
     });
-    this.glare.style.setProperty("--glare-x", `${(this.cursor.x + 1) * 50}%`);
-    this.glare.style.setProperty("--glare-y", `${(this.cursor.y + 1) * 50}%`);
+    // Move a prepainted light layer instead of repainting a gradient each frame.
+    this.glare.style.transform = `translate3d(${this.cursor.x * 25}%,${this.cursor.y * 25}%,0)`;
     const routeCount = Math.floor(this.activeTime / 2700);
     if (routeCount > this.completed) {
       const index = this.completed;
@@ -98,6 +105,8 @@ export class HeroMotion {
 
   reset() {
     [this.rig, this.artwork, this.veil, ...this.layers.map((layer) => layer.element)].forEach((element) => { element.style.removeProperty("transform"); element.style.removeProperty("opacity"); });
-    this.nodes.forEach((node) => { node.style.removeProperty("--px"); node.style.removeProperty("--py"); });
+    this.nodes.forEach((node) => { node.style.removeProperty("transform"); });
+    this.glare.style.removeProperty("transform");
+    this.backgroundScroll = Number.NaN;
   }
 }

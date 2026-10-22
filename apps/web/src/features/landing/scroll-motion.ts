@@ -29,6 +29,9 @@ export class ScrollMotion {
   private marqueeTime = 0;
   private marqueeWidth = 1;
   private gaugeTime = 0;
+  private viewportHeight = 1;
+  private previousScroll = Number.NaN;
+  private previousProgress = Number.NaN;
 
   constructor(private readonly root: HTMLElement) {
     this.platform = requiredElement(root, "[data-platform]");
@@ -53,6 +56,9 @@ export class ScrollMotion {
 
   measure() {
     const running = this.root.dataset.motion === "running";
+    this.viewportHeight = window.innerHeight;
+    this.previousScroll = Number.NaN;
+    this.previousProgress = Number.NaN;
     this.distance = Math.max(0, this.track.scrollWidth - this.viewport.clientWidth);
     this.platform.style.setProperty("--platform-height", `${window.innerHeight + this.distance}px`);
     this.platformTop = this.platform.getBoundingClientRect().top + window.scrollY;
@@ -67,25 +73,33 @@ export class ScrollMotion {
   }
 
   render(scroll: number, delta: number) {
-    const progress = this.distance > 0 ? clamp((scroll - this.platformTop) / this.distance) : 0;
-    this.track.style.transform = `translate3d(${-progress * this.distance}px,0,0)`;
-    this.progress.style.transform = `scaleX(${progress})`;
-    this.cards.forEach((card, i) => {
-      let covered = 0;
-      let arrival = 0;
-      for (let j = i + 1; j < this.cards.length; j += 1) {
-        const next = this.cards[j];
-        const stickyTop = window.innerHeight * .13 + j * 20;
-        const p = clamp((scroll + window.innerHeight - next.top) / Math.max(1, window.innerHeight - stickyTop));
-        if (p > 0) { covered = j - i; arrival = p; }
+    if (scroll !== this.previousScroll) {
+      const progress = this.distance > 0 ? clamp((scroll - this.platformTop) / this.distance) : 0;
+      if (progress !== this.previousProgress) {
+        this.track.style.transform = `translate3d(${-progress * this.distance}px,0,0)`;
+        this.progress.style.transform = `scaleX(${progress})`;
+        this.previousProgress = progress;
       }
-      card.element.style.transform = `scale(${1 - arrival * .035 * covered})`;
-      card.shade.style.opacity = String(.55 * arrival);
-    });
-    const lit = Math.min(this.words.length, Math.floor(clamp((scroll - this.revealTop) / this.revealDistance) * this.words.length * 1.15));
-    if (lit !== this.lit) {
-      this.words.forEach((word, i) => word.style.setProperty("--word-opacity", i < lit ? "1" : ".12"));
-      this.lit = lit;
+      this.cards.forEach((card, i) => {
+        let covered = 0;
+        let arrival = 0;
+        for (let j = i + 1; j < this.cards.length; j += 1) {
+          const next = this.cards[j];
+          const stickyTop = this.viewportHeight * .13 + j * 20;
+          const p = clamp((scroll + this.viewportHeight - next.top) / Math.max(1, this.viewportHeight - stickyTop));
+          // Keep each previous card's contribution as the next card arrives.
+          covered += p;
+          arrival = Math.max(arrival, p);
+        }
+        card.element.style.transform = `scale(${1 - .035 * covered})`;
+        card.shade.style.opacity = String(.55 * arrival);
+      });
+      const lit = Math.min(this.words.length, Math.floor(clamp((scroll - this.revealTop) / this.revealDistance) * this.words.length * 1.15));
+      if (lit !== this.lit) {
+        this.words.forEach((word, i) => word.style.setProperty("--word-opacity", i < lit ? "1" : ".12"));
+        this.lit = lit;
+      }
+      this.previousScroll = scroll;
     }
     if (this.examples.dataset.visible === "true") {
       this.marqueeTime += delta;
@@ -114,6 +128,8 @@ export class ScrollMotion {
     this.cards.forEach((card) => { card.element.style.removeProperty("transform"); card.shade.style.removeProperty("opacity"); });
     this.words.forEach((word) => word.style.removeProperty("--word-opacity"));
     this.lit = -1;
+    this.previousScroll = Number.NaN;
+    this.previousProgress = Number.NaN;
     this.gaugeValue.textContent = "72%";
     this.gaugeArc.style.removeProperty("stroke-dasharray");
   }

@@ -1,5 +1,5 @@
 import { HeroMotion } from "./hero-motion";
-import { lerp, requiredElement } from "./motion-math";
+import { frameEase, lerp, requiredElement } from "./motion-math";
 import { ScrollMotion } from "./scroll-motion";
 
 type FrameClock = { request: (callback: FrameRequestCallback) => number; cancel: (id: number) => void };
@@ -17,6 +17,8 @@ export class LandingMotionController {
   private frame: number | undefined;
   private previousTime: number | undefined;
   private scroll = window.scrollY;
+  private nativeScroll = window.scrollY;
+  private viewportHeight = window.innerHeight;
   private dirty = true;
   private paused = false;
   private disposed = false;
@@ -82,6 +84,8 @@ export class LandingMotionController {
     this.hero.measure();
     if (reading && oldTop !== undefined) window.scrollBy({ top: reading.getBoundingClientRect().top - oldTop, behavior: "instant" });
     this.scroll = window.scrollY;
+    this.nativeScroll = this.scroll;
+    this.viewportHeight = window.innerHeight;
     this.previousTime = undefined;
     this.dirty = false;
     if (mode === "running") this.request();
@@ -113,13 +117,25 @@ export class LandingMotionController {
   private tick = (time: number) => {
     this.frame = undefined;
     if (this.disposed || document.hidden || this.root.dataset.motion !== "running") return;
-    const delta = this.previousTime === undefined ? 0 : Math.min(64, time - this.previousTime);
+    const delta = this.previousTime === undefined ? 1000 / 60 : Math.min(64, time - this.previousTime);
     this.previousTime = time;
-    if (this.dirty) { this.sections.measure(); this.hero.measure(); this.dirty = false; }
-    this.scroll = lerp(this.scroll, window.scrollY, .075);
+    if (this.dirty) {
+      this.sections.measure();
+      this.hero.measure();
+      this.viewportHeight = window.innerHeight;
+      this.dirty = false;
+    }
+    // Read the scroll position before either scene writes to the DOM.
+    const targetScroll = window.scrollY;
+    // A distant anchor or restored scroll position must not animate through
+    // sections that are no longer on screen.
+    this.scroll = Math.abs(targetScroll - this.nativeScroll) > this.viewportHeight || Math.abs(this.scroll - targetScroll) < .05
+      ? targetScroll
+      : lerp(this.scroll, targetScroll, frameEase(.075, delta));
+    this.nativeScroll = targetScroll;
     this.hero.render(this.scroll, delta, this.coarse.matches);
-    this.sections.render(window.scrollY, delta);
-    if (this.hero.visible || this.animated.some((element) => element.dataset.visible === "true") || this.sections.needsFrame || Math.abs(this.scroll - window.scrollY) > .05) this.request();
+    this.sections.render(this.scroll, delta);
+    if (this.hero.visible || this.animated.some((element) => element.dataset.visible === "true") || this.sections.needsFrame || Math.abs(this.scroll - targetScroll) > .05) this.request();
     else this.previousTime = undefined;
   };
 

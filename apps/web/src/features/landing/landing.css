@@ -163,7 +163,7 @@
 .sema-runsHeading { display: flex; justify-content: space-between; gap: 8px; font-size: 6px; letter-spacing: .6px; padding-bottom: 7px; }
 .sema-runRow { display: grid; grid-template-columns: 45px 1fr auto; gap: 8px; padding: 5px 0; border-top: 1px solid var(--line); white-space: nowrap; }
 .sema-runRow > :nth-child(2) { overflow: hidden; text-overflow: ellipsis; }.sema-runRow > :last-child { color: var(--ok); }
-.sema-glare { position: absolute; inset: 0; pointer-events: none; opacity: .3; background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(var(--white-rgb), .08), transparent 48%); }
+.sema-glare { position: absolute; inset: -50%; pointer-events: none; opacity: .3; background: radial-gradient(ellipse 24% 24% at center, rgba(var(--white-rgb), .08), transparent); }
 .sema-depthChip { position: absolute; display: flex; align-items: center; gap: var(--space-2); padding: 13px 16px; font-size: 9px; color: var(--muted); border: 1px solid var(--glass-border); border-radius: 9px; background: var(--glass); backdrop-filter: var(--glass-blur); box-shadow: var(--glass-shadow); white-space: nowrap; }
 .sema-depthChip strong { color: var(--text); font-weight: 400; }.sema-depthChip small { font-size: 7px; color: var(--muted); }
 .sema-dailyChip { left: 46%; top: -3%; transform: translateZ(90px); }.sema-latencyChip { left: -6%; bottom: -17%; transform: translateZ(140px); }.sema-chipSymbol { color: var(--accent); font-size: 20px; }
@@ -239,6 +239,15 @@
 .sema-footerBottom { border-top: 1px solid var(--line); max-width: var(--maxw); margin: var(--space-6) auto 0; padding-block: var(--space-6); display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); font-size: 9px; color: var(--muted); }.sema-footerBottom ul { display: flex; gap: var(--space-5); flex-wrap: wrap; }.sema-footerBottom li { display: inline-flex; gap: 4px; }.sema-footerBottom li span { font-size: 7px; }
 .sema-motionToggle { position: fixed; bottom: var(--space-5); right: var(--space-5); z-index: 20; display: flex; align-items: center; gap: var(--space-2); min-height: 44px; border: 1px solid var(--glass-border); border-radius: 9px; padding: var(--space-3) var(--space-4); background: var(--bg-2); color: var(--text); font-size: 10px; box-shadow: var(--glass-shadow); cursor: pointer; }.sema-motionToggle[hidden] { display: none; }.sema-motionToggle:hover { border-color: var(--accent); }.sema-motionToggle:disabled { color: var(--muted); cursor: default; }
 .sema-platformCard, .sema-metricCard, .sema-ctaPanel, .sema-navAction { backdrop-filter: var(--glass-blur); }
+
+/* Promote only the moving surfaces, never the whole document or sticky roots. */
+.sema-landing[data-motion="running"] .sema-backgroundArtwork { will-change: transform, opacity; }
+.sema-landing[data-motion="running"] .sema-veil { will-change: opacity; }
+.sema-landing[data-motion="running"] [data-hero][data-visible="true"] .sema-wires { will-change: transform; transform: translateZ(0); }
+.sema-landing[data-motion="running"] [data-hero][data-visible="true"] :is(.sema-rig, .sema-flowLayer, .sema-flowNode, .sema-glare),
+.sema-landing[data-motion="running"] .sema-platformTrack,
+.sema-landing[data-motion="running"] .sema-processCard[data-visible="true"],
+.sema-landing[data-motion="running"] .sema-examples[data-visible="true"] .sema-marqueeTrack { will-change: transform; }
 
 .sema-landing[data-motion="running"] .sema-heroHeading > span > span { animation: sema-lineRise 1.1s var(--ease) both; }
 .sema-landing[data-motion="running"] .sema-heroHeading > span:nth-child(2) > span { animation-delay: .1s; }.sema-landing[data-motion="running"] .sema-heroHeading > span:nth-child(3) > span { animation-delay: .2s; }

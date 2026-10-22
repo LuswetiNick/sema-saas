@@ -1,6 +1,9 @@
 export const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 export const lerp = (from: number, to: number, amount: number) => from + (to - from) * amount;
 
+// Preserve the 60 Hz easing curve on displays with a different frame rate.
+export const frameEase = (amount: number, delta: number) => 1 - (1 - amount) ** (delta / (1000 / 60));
+
 export function elapsedLabel(milliseconds: number) {
   const seconds = Math.floor(milliseconds / 1000);
   return `t+${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;

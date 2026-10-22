@@ -2,7 +2,7 @@
 name: sema-landing-preview
 source: approved-spec-0001
 character: "Dark, cinematic, and precise. Quiet emerald light, warm ivory type, and layered glass make the support flow feel tangible."
-tokens: "landing.module.css owns the scoped tokens. The approved build contract is docs/specs/web/0001-sema-landing/index.md."
+tokens: "landing.css owns the scoped tokens. The approved build contract is docs/specs/web/0001-sema-landing/index.md."
 ---
 
 ## Build mandate
@@ -24,3 +24,7 @@ You can keep the visual treatment local to this feature. Shared button variants 
 ## Responsive and accessibility direction
 
 You can preserve the supplied breakpoints and contain visual bleed locally. Reduced motion and the pause control expose a complete reading layout. You can keep all sample labels readable, provide visible focus, and verify contrast against the rendered surfaces.
+
+## Stylesheet compatibility
+
+You approved uniquely prefixed feature CSS during implementation. The existing Turbopack loader does not preserve CSS Module exports, so `landing.css` uses the `sema-` class namespace without changing the shared loader.
